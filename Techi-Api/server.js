@@ -73,7 +73,7 @@ app.put('/sellerRegi', function(request, response) {
         if (err) {
             response.status(500).send({error:"Could not add item to wishlist"});
         } else {
-            Registration.update({},function(err,reg){
+            SellerRegistration.update({},function(err,reg){
                 if (err) {
                     response.status(500).send({error:"Could not add item to wishlist"});
                 } else {
@@ -86,19 +86,24 @@ app.put('/sellerRegi', function(request, response) {
  });
 
  //put using data
- app.put('/sellerRegi/:email', function(request, response) {
-    SellerRegistration.findOne({email: request.params.email}, function(err, reg) {
+ app.put('/sellerRegi/:id', function(request, response) {
+    SellerRegistration.updateOne({"_id": request.params.id},
+        {$set:{"firstname":request.body.firstname,
+                 "lastname":request.body.lastname,
+                 "email":request.body.email,
+                 "phonenumber":request.body.phonenumber,
+                 "pincode":request.body.pincode,
+                 "password":request.body.password,
+                 "address":request.body.address,
+                 "state":request.body.state
+
+
+}}, function(err, reg) {
         if (err) {
             response.status(500).send({error:"Could not add item to wishlist"});
         } else {
-            Registration.update({name:request.body.name},{phonenumber:request.body.phonenumber},function(err,reg){
-                if (err) {
-                    response.status(500).send({error:"Could not add item to wishlist"});
-                } else {
-                    response.send(reg);
-                }
-            })
            
+            response.send(request.body);
         }
     })
  });
@@ -113,27 +118,27 @@ app.put('/sellerRegi', function(request, response) {
         }
     });
 });
-//put Data
-app.put('/sellerRegi/put', function(request, response) {
-    var reg=new SellerRegistration();
-    reg.firstname=request.body.firstname;
-    reg.lastname=request.body.lastname;
-    reg.email=request.body.email;
-    reg.phonenumber=request.body.phonenumber;
-    reg.pincode=request.body.pincode;
-    reg.password=request.body.password;
-    reg.address=request.body.address;
-    reg.state=request.body.state;
+// //put Data
+// app.put('/sellerRegi/put', function(request, response) {
+//     var reg=new SellerRegistration();
+//     reg.firstname=request.body.firstname;
+//     reg.lastname=request.body.lastname;
+//     reg.email=request.body.email;
+//     reg.phonenumber=request.body.phonenumber;
+//     reg.pincode=request.body.pincode;
+//     reg.password=request.body.password;
+//     reg.address=request.body.address;
+//     reg.state=request.body.state;
  
 
-reg.put(function(err, savedProduct) {
-   if (err) {
-       response.status(500).send({error:"Could not save product"});
-   } else {
-       response.send(savedProduct);
-   }
-});
-});
+// reg.put(function(err, savedProduct) {
+//    if (err) {
+//        response.status(500).send({error:"Could not save product"});
+//    } else {
+//        response.send(savedProduct);
+//    }
+// });
+// });
 
 
 app.listen(3005, function() {
