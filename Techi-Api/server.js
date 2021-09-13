@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -7,6 +8,8 @@ var db = mongoose.connect('mongodb://localhost/techie');
 
 var SellerRegistration = require('./model/sellerregistration');
 const BuyerRegistration = require('./model/buyerregistration');
+const SellerProductAdd = require('./model/sellerproductadd');
+
 
 
 
@@ -22,6 +25,28 @@ app.all('/*', function(req, res, next) {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+//Seller Add the Product
+
+//post
+app.post('/addproduct', function(request, response) {
+    var reg=new SellerProductAdd();
+    reg.productcategory=request.body.productcategory;
+    reg.productid=request.body.productid;
+    reg.productname=request.body.productname;
+    reg.description=request.body.description;
+    reg.productimageurl=request.body.productimageurl;
+    reg.productprice=request.body.productprice;
+    reg.sellerId=request.body.sellerId;
+reg.save(function(err, savedProduct) {
+   if (err) {
+       response.status(500).send({error:"Could not save product"});
+   } else {
+       response.send(savedProduct);
+   }
+});
+});
+
 
 // BuyerRegistration
 
@@ -244,5 +269,5 @@ app.put('/sellerRegi', function(request, response) {
 
 
 app.listen(3005, function() {
-    console.log("Techie API running on port 3005...");
+    console.log("Techie API running on port 3004...");
 });
