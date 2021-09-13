@@ -6,6 +6,8 @@ var db = mongoose.connect('mongodb://localhost/techie');
 
 
 var SellerRegistration = require('./model/sellerregistration');
+const BuyerRegistration = require('./model/buyerregistration');
+
 
 
 
@@ -20,6 +22,100 @@ app.all('/*', function(req, res, next) {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+// BuyerRegistration
+
+//post
+app.post('/buyerRegi', function(request, response) {
+    var reg=new BuyerRegistration();
+    reg.firstname=request.body.firstname;
+    reg.lastname=request.body.lastname;
+    reg.email=request.body.email;
+    reg.phonenumber=request.body.phonenumber;
+    reg.pincode=request.body.pincode;
+    reg.password=request.body.password;
+    reg.address=request.body.address;
+    reg.state=request.body.state;
+ 
+
+reg.save(function(err, savedProduct) {
+   if (err) {
+       response.status(500).send({error:"Could not save product"});
+   } else {
+       response.send(savedProduct);
+   }
+});
+});
+
+//get all
+app.get('/buyerRegi', function(request, response) {
+
+    BuyerRegistration.find({},function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
+
+//get by emailid
+app.get('/buyerRegi/:email', function(request, response) {
+
+    BuyerRegistration.find({"email":request.params.email},function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
+
+
+ //put by ID
+ app.put('/buyerRegi/:id', function(request, response) {
+    BuyerRegistration.updateOne({"_id": request.params.id},
+        {$set:{"firstname":request.body.firstname,
+                 "lastname":request.body.lastname,
+                 "email":request.body.email,
+                 "phonenumber":request.body.phonenumber,
+                 "pincode":request.body.pincode,
+                 "password":request.body.password,
+                 "address":request.body.address,
+                 "state":request.body.state
+
+
+}}, function(err, reg) {
+        if (err) {
+            response.status(500).send({error:"Could not add item to wishlist"});
+        } else {
+           
+            response.send(request.body);
+        }
+    })
+ });
+
+
+ //delete by Id
+ app.delete('/buyerRegi/:email', function(request, response) {
+
+    BuyerRegistration.remove({"email":request.params.email},function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
+
+
+/* 
+Seller Registration 
+Seller login
+Seller Profile Update
+Seller Profile Delete
+ */
+
 //post
 app.post('/sellerRegi', function(request, response) {
         var reg=new SellerRegistration();
@@ -67,25 +163,49 @@ app.get('/sellerRegi/:email', function(request, response) {
 });
 
 //put
-
 app.put('/sellerRegi', function(request, response) {
-    SellerRegistration.findOne({email: request.body.email}, function(err, reg) {
+    SellerRegistration.updateOne({"_id": request.body._id},
+        {$set:{"firstname":request.body.firstname,
+                 "lastname":request.body.lastname,
+                 "email":request.body.email,
+                 "phonenumber":request.body.phonenumber,
+                 "pincode":request.body.pincode,
+                 "password":request.body.password,
+                 "address":request.body.address,
+                 "state":request.body.state
+
+
+}}, function(err, reg) {
         if (err) {
             response.status(500).send({error:"Could not add item to wishlist"});
         } else {
-            SellerRegistration.update({},function(err,reg){
-                if (err) {
-                    response.status(500).send({error:"Could not add item to wishlist"});
-                } else {
-                    response.send("Successfully added to wishlist");
-                }
-            })
            
+            response.send(request.body);
         }
     })
  });
 
- //put using data
+///another way//
+
+// app.put('/sellerRegi', function(request, response) {
+//     SellerRegistration.findOne({email: request.body.email}, function(err, reg) {
+//         if (err) {
+//             response.status(500).send({error:"Could not add item to wishlist"});
+//         } else {
+//             SellerRegistration.update({},function(err,reg){
+//                 if (err) {
+//                     response.status(500).send({error:"Could not add item to wishlist"});
+//                 } else {
+//                     response.send("Successfully added to wishlist");
+//                 }
+//             })
+           
+//         }
+//     })
+//  });
+
+
+ //put by ID
  app.put('/sellerRegi/:id', function(request, response) {
     SellerRegistration.updateOne({"_id": request.params.id},
         {$set:{"firstname":request.body.firstname,
@@ -107,6 +227,8 @@ app.put('/sellerRegi', function(request, response) {
         }
     })
  });
+
+
  //delete by Id
  app.delete('/sellerRegi/:email', function(request, response) {
 
@@ -118,27 +240,7 @@ app.put('/sellerRegi', function(request, response) {
         }
     });
 });
-// //put Data
-// app.put('/sellerRegi/put', function(request, response) {
-//     var reg=new SellerRegistration();
-//     reg.firstname=request.body.firstname;
-//     reg.lastname=request.body.lastname;
-//     reg.email=request.body.email;
-//     reg.phonenumber=request.body.phonenumber;
-//     reg.pincode=request.body.pincode;
-//     reg.password=request.body.password;
-//     reg.address=request.body.address;
-//     reg.state=request.body.state;
- 
 
-// reg.put(function(err, savedProduct) {
-//    if (err) {
-//        response.status(500).send({error:"Could not save product"});
-//    } else {
-//        response.send(savedProduct);
-//    }
-// });
-// });
 
 
 app.listen(3005, function() {
