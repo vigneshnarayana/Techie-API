@@ -27,6 +27,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 //Seller Add the Product
+//get by user
+app.get('/addproduct/:sellerid', function(request, response) {
+
+    SellerProductAdd.find({"sellerId":request.params.sellerid},function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
+
 
 //post
 app.post('/addproduct', function(request, response) {
@@ -38,6 +50,8 @@ app.post('/addproduct', function(request, response) {
     reg.productimageurl=request.body.productimageurl;
     reg.productprice=request.body.productprice;
     reg.sellerId=request.body.sellerId;
+    reg.quantity=request.body.quantity;
+
 reg.save(function(err, savedProduct) {
    if (err) {
        response.status(500).send({error:"Could not save product"});
@@ -51,6 +65,7 @@ reg.save(function(err, savedProduct) {
 // BuyerRegistration
 
 //post
+
 app.post('/buyerRegi', function(request, response) {
     var reg=new BuyerRegistration();
     reg.firstname=request.body.firstname;
@@ -269,5 +284,5 @@ app.put('/sellerRegi', function(request, response) {
 
 
 app.listen(3005, function() {
-    console.log("Techie API running on port 3004...");
+    console.log("Techie API running on port 3005...");
 });

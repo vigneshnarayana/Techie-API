@@ -9,7 +9,8 @@ var sellerproductadd = new Schema({
     description:String,
     productimageurl:String,
     productprice:String,
-    sellerId:String
+    sellerId:String,
+    quantity:String
     
 });
 
