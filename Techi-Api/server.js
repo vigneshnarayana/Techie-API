@@ -7,8 +7,8 @@ var db = mongoose.connect('mongodb://localhost/techie');
 
 
 var SellerRegistration = require('./model/sellerregistration');
-const BuyerRegistration = require('./model/buyerregistration');
-const SellerProductAdd = require('./model/sellerproductadd');
+var BuyerRegistration = require('./model/buyerregistration');
+var SellerProductAdd = require('./model/sellerproductadd');
 
 
 
@@ -18,7 +18,7 @@ const SellerProductAdd = require('./model/sellerproductadd');
 app.all('/*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "POST, GET");
+  res.header("Access-Control-Allow-Methods", "POST, GET, PUT");
   next();
 });
 
@@ -27,6 +27,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 //Seller Add the Product
+//filter by product
+
+
+
+//get all
+
+app.get('/addproduct', function(request, response) {
+
+    SellerProductAdd.find({},function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
+
 //get by user
 app.get('/addproduct/:sellerid', function(request, response) {
 
@@ -38,7 +55,18 @@ app.get('/addproduct/:sellerid', function(request, response) {
         }
     });
 });
+///
+app.get('/addproduct/:productcategory', function(request, response) {
 
+    SellerProductAdd.findOne({"productcategory":request.params.productcategory
+                              },function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            response.send(reg);
+        }
+    });
+});
 
 //post
 app.post('/addproduct', function(request, response) {
