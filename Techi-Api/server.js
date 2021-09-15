@@ -44,8 +44,9 @@ app.get('/addproduct', function(request, response) {
     });
 });
 
+
 //get by user
-app.get('/addproduct/:sellerid', function(request, response) {
+app.get('/addproduct/:sellerid',  function(request, response) {
 
     SellerProductAdd.find({"sellerId":request.params.sellerid},function(err, reg) {
         if (err) {
@@ -56,14 +57,27 @@ app.get('/addproduct/:sellerid', function(request, response) {
     });
 });
 ///
-app.get('/addproduct/:productcategory', function(request, response) {
+//delete by id
+app.put('/addproduct/:productId', function(request, response) {
 
-    SellerProductAdd.findOne({"productcategory":request.params.productcategory
-                              },function(err, reg) {
+    SellerProductAdd.remove({"productid":request.params.productId},function(err, reg) {
         if (err) {
             response.status(500).send({error: "Could not fetch products"});
         } else {
             response.send(reg);
+        }
+    });
+});
+
+///
+app.get('/addproduct/:productcategory', function(request, response) {
+
+     SellerProductAdd.findOne({"productcategory":request.params.productcategory
+                              },async function(err, reg) {
+        if (err) {
+            response.status(500).send({error: "Could not fetch products"});
+        } else {
+            await response.send(reg);
         }
     });
 });
@@ -151,8 +165,6 @@ app.get('/buyerRegi/:email', function(request, response) {
                  "password":request.body.password,
                  "address":request.body.address,
                  "state":request.body.state
-
-
 }}, function(err, reg) {
         if (err) {
             response.status(500).send({error:"Could not add item to wishlist"});
